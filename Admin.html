@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roots & Rhythms Admin</title>
+  <style>
+    :root {
+      --bg: #faf5f0;
+      --panel: #fffdf9;
+      --line: rgba(139, 69, 19, 0.12);
+      --text: #302b28;
+      --muted: #7e776f;
+      --accent: #e07656;
+      --accent-2: #c85f89;
+      --deep: #8b4513;
+      --shadow: 0 18px 50px rgba(48, 43, 40, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Manrope, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+    .hero, .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 24px 28px;
+      margin-bottom: 22px;
+    }
+    h1, h2, h3 {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      color: var(--deep);
+    }
+    h1 { font-size: clamp(2rem, 4vw, 3.6rem); }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-size: .72rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .hero a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 22px;
+    }
+    .panel { padding: 24px; }
+    .panel h2 { font-size: 2rem; margin-bottom: 4px; }
+    .panel p, .note, label { color: var(--muted); }
+    .note {
+      background: #fff7f1;
+      border: 1px solid rgba(224, 118, 86, 0.18);
+      border-radius: 16px;
+      padding: 14px 16px;
+      line-height: 1.6;
+      margin: 14px 0 0;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #fff3ee;
+      color: var(--deep);
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    form { display: grid; gap: 14px; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid rgba(139, 69, 19, 0.16);
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px 16px;
+      font: inherit;
+      color: var(--text);
+    }
+    textarea { min-height: 140px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    button {
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-ghost { background: transparent; color: var(--deep); border: 1px solid rgba(139, 69, 19, 0.18); }
+    .btn-danger { background: #a94b39; color: white; }
+    .login {
+      max-width: 460px;
+      margin: 24px auto 0;
+    }
+    .list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .post {
+      border: 1px solid rgba(139, 69, 19, 0.12);
+      background: #fff;
+      border-radius: 20px;
+      padding: 18px;
+    }
+    .post-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 12px;
+      color: white;
+      font-size: .85rem;
+      font-weight: 700;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; color: var(--muted); }
+    .small { font-size: .93rem; }
+    .hidden { display: none !important; }
+    .error { color: #a94b39; font-weight: 700; min-height: 1.2em; }
+    @media (max-width: 900px) {
+      .grid, .row { grid-template-columns: 1fr; }
+      .hero { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Roots & Rhythms</div>
+        <h1>Admin Dashboard</h1>
+        <p class="small">Manage posts from this Google Apps Script page. The public site stays static and unchanged.</p>
+      </div>
+      <a href="../index.html">Back to site</a>
+    </section>
+
+    <div id="loginPanel" class="panel login">
+      <h2>Admin Login</h2>
+      <p>Enter the 10-digit admin PIN to unlock the editor.</p>
+      <form id="loginForm">
+        <input id="pinInput" type="password" inputmode="numeric" maxlength="10" placeholder="10-digit PIN" autocomplete="one-time-code" required />
+        <div class="actions">
+          <button class="btn-primary" type="submit">Unlock</button>
+        </div>
+        <div id="loginError" class="error"></div>
+      </form>
+      <p class="note">Set the PIN in Apps Script script properties as <code>ADMIN_PIN</code>.</p>
+    </div>
+
+    <div id="editor" class="grid hidden">
+      <section class="panel">
+        <div class="status">Create or edit post</div>
+        <h2 id="formTitle">Create Post</h2>
+        <form id="postForm">
+          <input type="hidden" id="postId" />
+          <div>
+            <label for="title">Title</label>
+            <input id="title" required />
+          </div>
+          <div>
+            <label for="summary">Summary</label>
+            <textarea id="summary" required></textarea>
+          </div>
+          <div class="row">
+            <div>
+              <label for="category">Category</label>
+              <select id="category">
+                <option value="heritage">Heritage</option>
+                <option value="workshop">Workshop</option>
+                <option value="community">Community</option>
+              </select>
+            </div>
+            <div>
+              <label for="date">Date</label>
+              <input id="date" placeholder="May 1, 2026" required />
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="audience">Audience</label>
+              <input id="audience" placeholder="67" required />
+            </div>
+            <div>
+              <label for="accentColor">Accent Color</label>
+              <input id="accentColor" type="color" value="#E07656" />
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn-primary" id="submitBtn" type="submit">Publish Post</button>
+            <button class="btn-ghost hidden" id="cancelBtn" type="button">Cancel Edit</button>
+          </div>
+          <div id="formError" class="error"></div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="post-head" style="align-items:center;">
+          <div>
+            <div class="status">Published posts</div>
+            <h2>Post List</h2>
+          </div>
+          <button class="btn-danger" id="clearBtn" type="button">Clear All</button>
+        </div>
+        <p class="small">Posts saved here appear on the public site after the next refresh.</p>
+        <div id="postList" class="list"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = new URL(location.href);
+    API_URL.searchParams.delete('view');
+
+    const loginPanel = document.getElementById('loginPanel');
+    const editor = document.getElementById('editor');
+    const loginForm = document.getElementById('loginForm');
+    const pinInput = document.getElementById('pinInput');
+    const loginError = document.getElementById('loginError');
+    const postForm = document.getElementById('postForm');
+    const postId = document.getElementById('postId');
+    const title = document.getElementById('title');
+    const summary = document.getElementById('summary');
+    const category = document.getElementById('category');
+    const date = document.getElementById('date');
+    const audience = document.getElementById('audience');
+    const accentColor = document.getElementById('accentColor');
+    const submitBtn = document.getElementById('submitBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const postList = document.getElementById('postList');
+    const formError = document.getElementById('formError');
+    const clearBtn = document.getElementById('clearBtn');
+    const formTitle = document.getElementById('formTitle');
+
+    let token = '';
+    let editingId = '';
+    let posts = [];
+
+    function endpointBody(action, payload = {}) {
+      return JSON.stringify({ action, token, ...payload });
+    }
+
+    async function api(action, payload = {}) {
+      const response = await fetch(API_URL.toString(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: endpointBody(action, payload),
+      });
+      const data = await response.json();
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.error || 'Request failed.');
+      }
+      return data;
+    }
+
+    function badgeLabel(value) {
+      return value === 'workshop' ? 'Workshop' : value === 'community' ? 'Community' : 'Heritage';
+    }
+
+    function render() {
+      postList.innerHTML = '';
+      if (!posts.length) {
+        postList.innerHTML = '<p class="small">No posts published yet.</p>';
+        return;
+      }
+      posts.forEach((post) => {
+        const item = document.createElement('article');
+        item.className = 'post';
+        item.innerHTML = `
+          <div class="post-head">
+            <div>
+              <h3>${post.title}</h3>
+              <p class="small">${post.summary}</p>
+            </div>
+            <span class="badge" style="background:${post.accentColor || '#E07656'}">${badgeLabel(post.category)}</span>
+          </div>
+          <div class="meta">
+            <span>📅 ${post.date}</span>
+            <span>👥 ${post.audience}</span>
+          </div>
+          <div class="actions" style="margin-top:14px;">
+            <button class="btn-ghost" data-edit="${post.id}" type="button">Edit</button>
+            <button class="btn-ghost" data-delete="${post.id}" type="button">Delete</button>
+          </div>
+        `;
+        postList.appendChild(item);
+      });
+    }
+
+    function clearForm() {
+      editingId = '';
+      postId.value = '';
+      postForm.reset();
+      accentColor.value = '#E07656';
+      submitBtn.textContent = 'Publish Post';
+      formTitle.textContent = 'Create Post';
+      cancelBtn.classList.add('hidden');
+      formError.textContent = '';
+    }
+
+    function fillForm(post) {
+      editingId = post.id;
+      postId.value = post.id;
+      title.value = post.title || '';
+      summary.value = post.summary || '';
+      category.value = post.category || 'heritage';
+      date.value = post.date || '';
+      audience.value = post.audience || '';
+      accentColor.value = post.accentColor || '#E07656';
+      submitBtn.textContent = 'Update Post';
+      formTitle.textContent = 'Edit Post';
+      cancelBtn.classList.remove('hidden');
+      formError.textContent = '';
+    }
+
+    async function loadPosts() {
+      const data = await api('list');
+      posts = Array.isArray(data.posts) ? data.posts : [];
+      render();
+    }
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      loginError.textContent = '';
+      try {
+        const data = await api('login', { pin: pinInput.value.trim() });
+        token = data.token;
+        loginPanel.classList.add('hidden');
+        editor.classList.remove('hidden');
+        await loadPosts();
+      } catch (error) {
+        loginError.textContent = error.message;
+        pinInput.value = '';
+      }
+    });
+
+    postForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      formError.textContent = '';
+      const payload = {
+        id: editingId || undefined,
+        title: title.value.trim(),
+        summary: summary.value.trim(),
+        category: category.value,
+        date: date.value.trim(),
+        audience: audience.value.trim(),
+        accentColor: accentColor.value || '#E07656',
+      };
+
+      try {
+        await api(editingId ? 'update' : 'create', payload);
+        clearForm();
+        await loadPosts();
+      } catch (error) {
+        formError.textContent = error.message;
+      }
+    });
+
+    cancelBtn.addEventListener('click', clearForm);
+
+    postList.addEventListener('click', async (event) => {
+      const editId = event.target.getAttribute('data-edit');
+      const deleteId = event.target.getAttribute('data-delete');
+      if (editId) {
+        const post = posts.find((item) => item.id === editId);
+        if (post) fillForm(post);
+        return;
+      }
+      if (deleteId) {
+        if (!confirm('Delete this post?')) return;
+        try {
+          await api('delete', { id: deleteId });
+          if (editingId === deleteId) clearForm();
+          await loadPosts();
+        } catch (error) {
+          formError.textContent = error.message;
+        }
+      }
+    });
+
+    clearBtn.addEventListener('click', async () => {
+      if (!confirm('Clear all posts?')) return;
+      try {
+        await api('clear');
+        clearForm();
+        await loadPosts();
+      } catch (error) {
+        formError.textContent = error.message;
+      }
+    });
+  </script>
+</body>
+</html>
